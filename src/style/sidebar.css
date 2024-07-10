@@ -1,0 +1,35 @@
+/* src/style/sidebar.css */
+.sidebar {
+  width: 200px;
+  height: 100vh;
+  position: fixed;
+  background-color: #f4f4f4;
+  padding: 20px;
+  box-shadow: 2px 0px 5px rgba(0,0,0,0.1);
+}
+
+.sidebar ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.sidebar ul li {
+  margin: 20px 0;
+}
+
+.sidebar ul li a {
+  text-decoration: none;
+  color: #333;
+  font-size: 18px;
+}
+
+/* src/style/dashboard.css */
+.dashboard-container {
+  display: flex;
+}
+
+.dashboard-content {
+  margin-left: 220px; /* Adjust based on sidebar width */
+  padding: 20px;
+  flex: 1;
+}
