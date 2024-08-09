@@ -1,0 +1,100 @@
+.greetings h3{
+  margin: 0;
+}
+.rep-main-container{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin-top: 50px;
+  width: 100%;
+}
+
+.rep-patient-status h3, p{
+  margin: 0px;
+  margin-left: 20px;
+  font-weight: 500;
+}
+
+.rep-patient-status{
+  width: 50%;
+}
+
+.rep-status{
+  margin-top: 20px;
+  margin-left: 20px;
+  background-color: #FFFFFF;
+  border-radius: 5px;
+  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.1);
+}
+
+.rep-just-a-thing{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+}
+
+.rep-informationn{
+  margin-left: 20px;
+}
+.rep-informationn h4{
+  margin: 0;
+  font-weight: 500;
+  font-size: 16px;
+}
+
+.rep-informationn p{
+  font-size: 11px;
+  color: gray;
+}
+.rep-status-button{
+  padding-right: 20px;
+}
+
+.ongoing,
+.yet-to-check,
+.testing{
+  width: 80px;
+  height: 25px;
+}
+
+.ongoing{
+  color: #febe00;
+  border: 0.5px solid #febe00;
+  border-radius: 5px;
+  background-color: #ffd21d2d;
+}
+.yet-to-check{
+  color: #008000;
+  border: 0.5px solid #008000;
+  border-radius: 5px;
+  background-color: #00800018;
+}
+.billing-section{
+  width: 50%;
+  margin-left: 20px;
+}
+.billing-section h3{
+  margin: 0;
+  font-weight: 500;
+}
+
+.generate{
+  padding: 8px 16px 8px 16px;
+  border-radius: 5px;
+  background-color: #79e842;
+  border: 0.5px solid #93c572;
+  color: #FFFFFF;
+  font-weight: 600;
+  cursor: pointer;
+}
+.no{
+  padding: 20px;
+}
+.testing{
+  color: #ff6f3c;
+  border: 0.5px solid #ff6f3c;
+  border-radius: 5px;
+  background-color: #ff703c1d;
+}

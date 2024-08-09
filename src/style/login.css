@@ -22,7 +22,7 @@ input{
   border-radius: 5px;
   border: 0.5px solid gray;
 }
-button{
+.btnL{
   width: 263px;
   height: 40px;
   border-radius: 5px;
@@ -43,4 +43,9 @@ span{
 }
 .btn-outline-danger{
   background-color: red;
+}
+.select-role{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 }

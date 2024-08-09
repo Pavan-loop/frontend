@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
-import '../style/sidebar.css';
+import '../../style/sidebar.css';
 
 const Sidebar = () => {
   const navigate = useNavigate();
@@ -14,7 +14,7 @@ const Sidebar = () => {
       <ul className='sideList'>
         <li>
           <NavLink
-            to="/dashboard"
+            to="/receptionist-dashboard"
             className={({ isActive }) => (isActive ? 'active-link' : '')}
           >
             <i className="bi bi-grid"></i>
@@ -23,11 +23,11 @@ const Sidebar = () => {
         </li>
         <li>
           <NavLink
-            to="/plans"
+            to="/add-patients"
             className={({ isActive }) => (isActive ? 'active-link' : '')}
           >
-            <i className="bi bi-person-plus"></i>
-            <div className="listt">Add Employees</div>
+            <i class="bi bi-person-add"></i>
+            <div className="listt">Add Patients</div>
           </NavLink>
         </li>
       </ul>
