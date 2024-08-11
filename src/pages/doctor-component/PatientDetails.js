@@ -83,8 +83,7 @@ const PatientDetails = () => {
         draggable: true,
         progress: undefined,
       });
-
-      await axios.put(`http://localhost:5000/api/modify/status/testing/${patientId}`, {}, {
+      await axios.put(`http://localhost:5000/api/modify/status/complete/${patientId}`, {}, {
         headers: {'x-auth-token': localStorage.getItem('token') }
       });
 
@@ -163,7 +162,7 @@ const PatientDetails = () => {
           <div className="pat-card">
             <div className="infos">
               <div className='profilee'></div>
-              <h4>Mr. {patient.firstName} {patient.lastName}</h4>
+              <h4>{patient.firstName} {patient.lastName}</h4>
               <p>{patient.age} Years {patient.gender}</p>
             </div>
             <hr />

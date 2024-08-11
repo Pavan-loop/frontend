@@ -7,20 +7,50 @@ import '../../style/receptionist.css';
 const ReceptionistDashboard = () => {
   const [patients, setPatients] = useState([]);
   const [name, setName] = useState('');
+  const [appointments, setAppointments] = useState(0);
+  const [totalPatients, setTotalPatients] = useState(0);
+  const [availableDoctors, setAvailableDoctors] = useState(0);
+  const [yetToAttend, setYetToAttend] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [patientsPerPage] = useState(5); // Number of patients per page
+
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchUser = async () => {
+    const fetchData = async () => {
       const token = localStorage.getItem('token');
       if (!token) {
         navigate('/login');
         return;
       }
+
       try {
+        // Fetch employee (receptionist) information
         const res = await axios.get('http://localhost:5000/api/emp/users', {
           headers: { 'x-auth-token': token },
         });
         setName(res.data.firstName);
+
+        // Fetch patient data
+        const patientRes = await axios.get('http://localhost:5000/api/patients', {
+          headers: { 'x-auth-token': token },
+        });
+
+        const patientData = patientRes.data;
+        setPatients(patientData);
+
+        // Calculate metrics
+        const total = patientData.length;
+        const appointments = patientData.filter(patient => patient.status !== 'Complete').length;
+        const yetToAttend = patientData.filter(patient => patient.status === 'Yet to check').length;
+        const availableDoctors = await axios.get('http://localhost:5000/api/emp/doctors', {
+          headers: { 'x-auth-token': token },
+        });
+
+        setAppointments(appointments);
+        setTotalPatients(total);
+        setYetToAttend(yetToAttend);
+        setAvailableDoctors(availableDoctors.data.length);
       } catch (err) {
         console.error(err.message);
         localStorage.removeItem('token');
@@ -28,17 +58,7 @@ const ReceptionistDashboard = () => {
       }
     };
 
-    const fetchPatients = async () => {
-      try {
-        const res = await axios.get('http://localhost:5000/api/patients');
-        setPatients(res.data);
-      } catch (err) {
-        console.error('Error fetching patient data:', err.message);
-      }
-    };
-
-    fetchUser();
-    fetchPatients();
+    fetchData();
   }, [navigate]);
 
   const getStatusButton = (status) => {
@@ -60,8 +80,25 @@ const ReceptionistDashboard = () => {
   );
   const completedPatients = patients.filter(patient => patient.status === 'Complete');
 
+  // Pagination logic
+  const indexOfLastPatient = currentPage * patientsPerPage;
+  const indexOfFirstPatient = indexOfLastPatient - patientsPerPage;
+  const currentPatients = completedPatients.slice(indexOfFirstPatient, indexOfLastPatient);
+
+  const handleNextPage = () => {
+    if (currentPage < Math.ceil(completedPatients.length / patientsPerPage)) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  const handlePreviousPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
   const handleGenerateBill = async (patient) => {
-    navigate('/billing');
+    navigate(`/billing/${patient._id}`);
   };
 
   return (
@@ -79,7 +116,7 @@ const ReceptionistDashboard = () => {
               </div>
             </div>
             <div className="info">
-              <h2>24.5K</h2>
+              <h2>{appointments}</h2>
               <p>Appointments</p>
             </div>
           </div>
@@ -91,7 +128,7 @@ const ReceptionistDashboard = () => {
               </div>
             </div>
             <div className="info">
-              <h2>20.0K</h2>
+              <h2>{totalPatients}</h2>
               <p>Total Patients</p>
             </div>
           </div>
@@ -103,7 +140,7 @@ const ReceptionistDashboard = () => {
               </div>
             </div>
             <div className="info">
-              <h2>14.5K</h2>
+              <h2>{availableDoctors}</h2>
               <p>Available Doctors</p>
             </div>
           </div>
@@ -115,8 +152,8 @@ const ReceptionistDashboard = () => {
               </div>
             </div>
             <div className="info">
-              <h2>1.5K</h2>
-              <p>Yet To Attended</p>
+              <h2>{yetToAttend}</h2>
+              <p>Yet To Attend</p>
             </div>
           </div>
         </div>
@@ -163,7 +200,46 @@ const ReceptionistDashboard = () => {
               )}
             </div>
           </div>
+        </div>
 
+        <div className="attended-patients">
+          <h3>Attended Patient History</h3>
+          <div className="att-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>Sl.no</th>
+                  <th>Name</th>
+                  <th>Age</th>
+                  <th>Medical</th>
+                  <th>Patient</th>
+                  <th>Email</th>
+                </tr>
+              </thead>
+              <tbody>
+                {currentPatients.map((patient, index) => (
+                  <tr key={patient._id}>
+                    <td>{indexOfFirstPatient + index + 1}</td>
+                    <td>{`${patient.firstName} ${patient.lastName}`}</td>
+                    <td>{patient.age}</td>
+                    <td>{patient.medicalCondition}</td>
+                    <td>{patient.patientType}</td>
+                    <td>{patient.email}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+
+            <div className="pagination">
+              <button onClick={handlePreviousPage} disabled={currentPage === 1}>
+                Previous
+              </button>
+              <span>{currentPage}</span>
+              <button onClick={handleNextPage} disabled={currentPage >= Math.ceil(completedPatients.length / patientsPerPage)}>
+                Next
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </MainLayout>

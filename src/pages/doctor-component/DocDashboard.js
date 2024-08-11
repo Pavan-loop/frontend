@@ -11,6 +11,9 @@ const DoctorDashboard = () => {
   const [attendedPatients, setAttendedPatients] = useState(0);
   const [appointments, setAppointments] = useState(0);
   const [yetToAttend, setYetToAttend] = useState(0);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [patientsPerPage] = useState(5);
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -40,12 +43,12 @@ const DoctorDashboard = () => {
         // Set patient data and calculate metrics
         setPatients(patientData);
 
-        const total = patientData.length;
+        const totalPatients = patientData.length;
         const attended = patientData.filter(patient => patient.status === 'Complete').length;
-        const appointments = total - attended;
-        const yetToAttend = patientData.filter(patient => patient.status === 'Yet to attend').length;
+        const appointments = totalPatients - attended;
+        const yetToAttend = patientData.filter(patient => patient.status === 'Yet to check').length;
 
-        setTotalPatients(total);
+        setTotalPatients(totalPatients);
         setAttendedPatients(attended);
         setAppointments(appointments);
         setYetToAttend(yetToAttend);
@@ -70,6 +73,22 @@ const DoctorDashboard = () => {
       console.error('Failed to update patient status:', err.message);
     }
   };
+
+  // Pagination for attended patients
+  const attendedPatientList = patients.filter(patient => patient.status === 'Complete');
+  const indexOfLastPatient = currentPage * patientsPerPage;
+  const indexOfFirstPatient = indexOfLastPatient - patientsPerPage;
+  const currentPatients = attendedPatientList.slice(indexOfFirstPatient, indexOfLastPatient);
+
+  const handleNextPage = () => {
+    setCurrentPage(prev => prev + 1);
+  };
+
+  const handlePreviousPage = () => {
+    setCurrentPage(prev => prev - 1);
+  };
+
+  const filteredPatients = patients.filter(patient => patient.status !== 'Complete');
 
   return (
     <MainLayout>
@@ -123,7 +142,7 @@ const DoctorDashboard = () => {
             </div>
             <div className="info">
               <h2>{yetToAttend}</h2>
-              <p>Yet To Attend</p>
+              <p>Yet to Attend</p>
             </div>
           </div>
         </div>
@@ -131,28 +150,76 @@ const DoctorDashboard = () => {
         <div className="appointments">
           <h3>Appointments</h3>
           <div className="appointment-container">
-            {patients.length > 0 ? patients.map((patient, index) => (
-              <div key={index} className="just-a-thing">
-                <div className='informationn'>
-                  <h4>{`${patient.firstName} ${patient.lastName}`}</h4>
-                  <p>{`${patient.age} ${patient.gender}, ${new Date(patient.date).toLocaleDateString()} ${patient.time}`}</p>
+            {filteredPatients.length > 0 ? (
+              filteredPatients.map((patient, index) => (
+                <div key={index} className="just-a-thing">
+                  <div className='informationn'>
+                    <h4>{`${patient.firstName} ${patient.lastName}`}</h4>
+                    <p>{`${patient.age} ${patient.gender}, ${new Date(patient.date).toLocaleDateString()} ${patient.time}`}</p>
+                  </div>
+                  <div className='status'>
+                    <div></div>
+                    {patient.status === 'Testing' ? (
+                      <button className='testing'>Testing</button>
+                    ) : (
+                      <>
+                        <button className='accept' onClick={() => handleAccept(patient._id)}>Accept</button>
+                        <button className='stat'>Decline</button>
+                      </>
+                    )}
+                  </div>
                 </div>
-                <div className='status'>
-                  <div></div>
-                  {patient.status === 'Testing' ? (
-                    <button className='testing'>Testing</button>
-                  ) : (
-                    <>
-                      <button className='accept' onClick={() => handleAccept(patient._id)}>Accept</button>
-                      <button className='stat'>Decline</button>
-                    </>
-                  )}
-                </div>
-              </div>
-            )) : (
-              <p>No appointments yet.</p>
+              ))
+            ) : (
+              <p>No patients yet.</p>
             )}
           </div>
+        </div>
+
+        <div className="attended-patients">
+          <h3>Attended Patient History</h3>
+          <div className="att-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>Sl.no</th>
+                  <th>Name</th>
+                  <th>Age</th>
+                  <th>Medical</th>
+                  <th>Patient</th>
+                  <th>Email</th>
+                </tr>
+              </thead>
+              <tbody>
+                {currentPatients.length > 0 ? (
+                  currentPatients.map((patient, index) => (
+                    <tr key={patient._id}>
+                      <td>{indexOfFirstPatient + index + 1}</td>
+                      <td>{patient.firstName} {patient.lastName}</td>
+                      <td>{patient.age}</td>
+                      <td>{patient.medicalCondition}</td>
+                      <td>{patient.patientType}</td>
+                      <td>{patient.email}</td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="6">No attended patients yet.</td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+            <div className="pagination">
+            <button onClick={handlePreviousPage} disabled={currentPage === 1}>
+              Previous
+            </button>
+            <span>{currentPage}</span>
+            <button onClick={handleNextPage} disabled={currentPage >= Math.ceil(attendedPatientList.length / patientsPerPage)}>
+              Next
+            </button>
+          </div>
+          </div>
+          
         </div>
 
       </div>

@@ -1,14 +1,29 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import ReactPaginate from 'react-paginate';
 import MainLayout from './MainLayout';
+import '../style/admin.css';
 
 const Dashboard = () => {
   const [appointments, setAppointments] = useState(0);
   const [totalPatients, setTotalPatients] = useState(0);
   const [availableDoctors, setAvailableDoctors] = useState(0);
   const [availableReceptionists, setAvailableReceptionists] = useState(0);
+  const [patientToDoctor, setPatientToDoctor] = useState([]);
+  const [attendedPatients, setAttendedPatients] = useState([]);
+  const [doctors, setDoctors] = useState([]);
   const navigate = useNavigate();
+
+  // Pagination state for Patients and Their Doctors
+  const [patientDoctorPage, setPatientDoctorPage] = useState(0);
+  const itemsPerPage = 5; // Number of items per page
+
+  // Pagination state for Available Doctors
+  const [doctorPage, setDoctorPage] = useState(0);
+
+  // Pagination state for Attended Patient History
+  const [attendedPatientsPage, setAttendedPatientsPage] = useState(0);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -25,13 +40,19 @@ const Dashboard = () => {
           headers: { 'x-auth-token': token },
         });
 
-        const patients = patientRes.data;
+        const patients = patientRes.data.map(patient => {
+          // Format the date to MM/DD/YYYY
+          const formattedDate = new Date(patient.date).toLocaleDateString('en-US');
+          return { ...patient, formattedDate };
+        });
+
         const total = patients.length;
         const completedAppointments = patients.filter(patient => patient.status === 'Complete').length;
         const ongoingAppointments = total - completedAppointments;
 
         setTotalPatients(total);
         setAppointments(ongoingAppointments);
+        setPatientToDoctor(patients);
 
         // Fetch all doctors
         const doctorsRes = await axios.get('http://localhost:5000/api/emp/doctors', {
@@ -40,6 +61,7 @@ const Dashboard = () => {
 
         const doctors = doctorsRes.data;
         setAvailableDoctors(doctors.length);
+        setDoctors(doctorsRes.data);
 
         // Fetch all employees and filter receptionists
         const employeesRes = await axios.get('http://localhost:5000/api/emp/get', {
@@ -48,6 +70,12 @@ const Dashboard = () => {
 
         const receptionists = employeesRes.data.filter(employee => employee.role === 'receptionist');
         setAvailableReceptionists(receptionists.length);
+
+        const attendedPatientsRes = await axios.get('http://localhost:5000/api/patients/attended/patients', {
+          headers: { 'x-auth-token': token },
+        });
+
+        setAttendedPatients(attendedPatientsRes.data);
 
       } catch (err) {
         console.error(err.message);
@@ -58,6 +86,26 @@ const Dashboard = () => {
 
     fetchData();
   }, [navigate]);
+
+  // Handling page change for Patients and Their Doctors
+  const handlePatientDoctorPageClick = (data) => {
+    setPatientDoctorPage(data.selected);
+  };
+
+  // Handling page change for Available Doctors
+  const handleDoctorPageClick = (data) => {
+    setDoctorPage(data.selected);
+  };
+
+  // Handling page change for Attended Patients
+  const handleAttendedPatientsPageClick = (data) => {
+    setAttendedPatientsPage(data.selected);
+  };
+
+  // Sliced data for rendering paginated items
+  const displayedPatientToDoctor = patientToDoctor.slice(patientDoctorPage * itemsPerPage, (patientDoctorPage + 1) * itemsPerPage);
+  const displayedDoctors = doctors.slice(doctorPage * itemsPerPage, (doctorPage + 1) * itemsPerPage);
+  const displayedAttendedPatients = attendedPatients.slice(attendedPatientsPage * itemsPerPage, (attendedPatientsPage + 1) * itemsPerPage);
 
   return (
     <MainLayout>
@@ -113,6 +161,111 @@ const Dashboard = () => {
               <h2>{availableReceptionists}</h2>
               <p>Available Receptionists</p>
             </div>
+          </div>
+        </div>
+
+        <div className="control-pannel">
+          <div className="patient-to-doctor">
+            <h3>Patients and Their Doctors</h3>
+            <div className="patient-to-doctor-card">
+            {displayedPatientToDoctor.map((item, index) => (
+              <div key={index} className="profile-info">
+                <div className="patient-info">
+                  <h3>{item.firstName}</h3>
+                  <p>{item.age} {item.gender} {item.formattedDate} {item.time}</p>
+                </div>
+                <div className="status">
+                  <button className={item.status}>{item.status}</button>
+                </div>
+                <div className="doctor-info">
+                  <h3>Dr. {item.doctor.firstName}</h3>
+                  <p>{item.doctor.role} {item.doctor.phoneNumber}</p>
+                </div>
+              </div>
+            ))}
+            <ReactPaginate
+              previousLabel={'previous'}
+              nextLabel={'next'}
+              breakLabel={'...'}
+              pageCount={Math.ceil(patientToDoctor.length / itemsPerPage)}
+              marginPagesDisplayed={2}
+              pageRangeDisplayed={4}
+              onPageChange={handlePatientDoctorPageClick}
+              containerClassName={'pagination'}
+              activeClassName={'active'}
+            />
+            </div>
+            
+          </div>
+
+          <div className="total-dotors">
+            <h3>Available Doctors</h3>
+            <div className="total-doctor-card">
+              {displayedDoctors.map((item, index) => (
+              <div key={index} className="doc-profile-info">
+                <div className="doc-info">
+                  <h3>Dr. {item.firstName} {item.lastName}</h3>
+                  <p>{item.role} ({item.gender}) <br /> {item.phoneNumber}</p>
+                </div>
+                <div className="contact">
+                  <button><i className="bi bi-envelope"></i> <span className="space">..</span> mail</button>
+                </div>
+              </div>
+              ))}
+              <ReactPaginate
+              previousLabel={'previous'}
+              nextLabel={'next'}
+              breakLabel={'...'}
+              pageCount={Math.ceil(doctors.length / itemsPerPage)}
+              marginPagesDisplayed={2}
+              pageRangeDisplayed={5}
+              onPageChange={handleDoctorPageClick}
+              containerClassName={'pagination'}
+              activeClassName={'active'}
+            />
+            </div>
+            
+          </div>
+        </div>
+
+        <div className="attended-patients">
+          <h3>Attended Patient History</h3>
+          <div className="att-container">
+          <table>
+              <thead>
+                <tr>
+                  <th>Sl.no</th>
+                  <th>Name</th>
+                  <th>Age</th>
+                  <th>Medical</th>
+                  <th>Patient</th>
+                  <th>Email</th>
+                </tr>
+              </thead>
+              <tbody>
+                {displayedAttendedPatients.map((patient, index) => (
+                  <tr key={index}>
+                    <td>{index + 1}</td>
+                    <td>{patient.firstName}</td>
+                    <td>{patient.age}</td>
+                    <td>{patient.medicalCondition}</td>
+                    <td>{patient.patientType}</td>
+                    <td>{patient.email}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            <ReactPaginate
+              previousLabel={'previous'}
+              nextLabel={'next'}
+              breakLabel={'...'}
+              pageCount={Math.ceil(attendedPatients.length / itemsPerPage)}
+              marginPagesDisplayed={2}
+              pageRangeDisplayed={5}
+              onPageChange={handleAttendedPatientsPageClick}
+              containerClassName={'pagination'}
+              activeClassName={'active'}
+            />
           </div>
         </div>
       </div>

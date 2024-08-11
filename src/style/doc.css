@@ -99,6 +99,7 @@
 .appointments{
   margin-top: 30px;
   margin-left: 30px;
+  height: 300px;
 }
 
 .appointment-container{
@@ -127,7 +128,7 @@
 }
 .status{
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
   width: 38%;
 }
@@ -155,4 +156,39 @@
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+}
+
+.attended-patients{
+  margin-top: 60px;
+  margin-left: 30px;
+  width: 93%;
+}
+
+.attended-patients h3{
+  font-weight: 500;
+  margin-bottom: 20px;
+}
+
+.attended-patients table{
+  width: 100%;
+  border-collapse: separate;
+  padding-left: 25px;
+}
+.attended-patients table th{
+  font-weight: 500;
+  text-align: start;
+  padding: 20px 0;
+  width: 150px;
+}
+.attended-patients table td{
+  font-weight: 300;
+  padding: 20px 0;
+  width: 150px;
+}
+.att-container{
+  border-radius: 5px;
+  background-color: white;
+  width: 100%;
+  padding: 10px;
+  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);
 }
