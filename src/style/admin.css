@@ -17,6 +17,7 @@
   margin-top: 20px;
   background-color: #FFFFFF;
   width: 95%;
+  height: 260.5px;
   border-radius: 5px;
   box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);
 }
@@ -54,6 +55,7 @@
 }
 .total-doctor-card{
   margin-top: 20px;
+  height: 260.5px;
   background-color: #FFFFFF;
   box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);
   border-radius: 5px;

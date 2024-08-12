@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import MainLayout from './MainLayout';
+import ReactPaginate from 'react-paginate';
 import '../../style/doc.css';
 
 const DoctorDashboard = () => {
@@ -12,9 +13,11 @@ const DoctorDashboard = () => {
   const [appointments, setAppointments] = useState(0);
   const [yetToAttend, setYetToAttend] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
+  const [patientDoctorPage, setPatientDoctorPage] = useState(0);
   const [patientsPerPage] = useState(5);
 
   const navigate = useNavigate();
+  const itemsPerPage = 3;
 
   useEffect(() => {
     const fetchData = async () => {
@@ -63,6 +66,10 @@ const DoctorDashboard = () => {
     fetchData();
   }, [navigate]);
 
+  const handlePatientDoctorPageClick = (data) => {
+    setPatientDoctorPage(data.selected);
+  };
+
   const handleAccept = async (patientId) => {
     try {
       await axios.put(`http://localhost:5000/api/modify/status/${patientId}`, {}, {
@@ -89,6 +96,7 @@ const DoctorDashboard = () => {
   };
 
   const filteredPatients = patients.filter(patient => patient.status !== 'Complete');
+  const displayedPatientToDoctor = filteredPatients.slice(patientDoctorPage * itemsPerPage, (patientDoctorPage + 1) * itemsPerPage);
 
   return (
     <MainLayout>
@@ -147,11 +155,12 @@ const DoctorDashboard = () => {
           </div>
         </div>
 
+        <div className="control-pannel">
         <div className="appointments">
           <h3>Appointments</h3>
           <div className="appointment-container">
             {filteredPatients.length > 0 ? (
-              filteredPatients.map((patient, index) => (
+              displayedPatientToDoctor.map((patient, index) => (
                 <div key={index} className="just-a-thing">
                   <div className='informationn'>
                     <h4>{`${patient.firstName} ${patient.lastName}`}</h4>
@@ -173,7 +182,22 @@ const DoctorDashboard = () => {
             ) : (
               <p>No patients yet.</p>
             )}
+            <ReactPaginate
+              previousLabel={'previous'}
+              nextLabel={'next'}
+              breakLabel={'...'}
+              pageCount={Math.ceil(filteredPatients.length / itemsPerPage)}
+              marginPagesDisplayed={2}
+              pageRangeDisplayed={3}
+              onPageChange={handlePatientDoctorPageClick}
+              containerClassName={'pagination'}
+              activeClassName={'active'}
+            />
           </div>
+        </div>
+        <div className="right-side">
+          
+        </div>
         </div>
 
         <div className="attended-patients">

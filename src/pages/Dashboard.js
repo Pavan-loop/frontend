@@ -15,9 +15,8 @@ const Dashboard = () => {
   const [doctors, setDoctors] = useState([]);
   const navigate = useNavigate();
 
-  // Pagination state for Patients and Their Doctors
   const [patientDoctorPage, setPatientDoctorPage] = useState(0);
-  const itemsPerPage = 5; // Number of items per page
+  const itemsPerPage = 3; // Number of items per page
 
   // Pagination state for Available Doctors
   const [doctorPage, setDoctorPage] = useState(0);
@@ -87,22 +86,19 @@ const Dashboard = () => {
     fetchData();
   }, [navigate]);
 
-  // Handling page change for Patients and Their Doctors
   const handlePatientDoctorPageClick = (data) => {
     setPatientDoctorPage(data.selected);
   };
 
-  // Handling page change for Available Doctors
   const handleDoctorPageClick = (data) => {
     setDoctorPage(data.selected);
   };
 
-  // Handling page change for Attended Patients
   const handleAttendedPatientsPageClick = (data) => {
     setAttendedPatientsPage(data.selected);
   };
 
-  // Sliced data for rendering paginated items
+
   const displayedPatientToDoctor = patientToDoctor.slice(patientDoctorPage * itemsPerPage, (patientDoctorPage + 1) * itemsPerPage);
   const displayedDoctors = doctors.slice(doctorPage * itemsPerPage, (doctorPage + 1) * itemsPerPage);
   const displayedAttendedPatients = attendedPatients.slice(attendedPatientsPage * itemsPerPage, (attendedPatientsPage + 1) * itemsPerPage);
@@ -189,7 +185,7 @@ const Dashboard = () => {
               breakLabel={'...'}
               pageCount={Math.ceil(patientToDoctor.length / itemsPerPage)}
               marginPagesDisplayed={2}
-              pageRangeDisplayed={4}
+              pageRangeDisplayed={3}
               onPageChange={handlePatientDoctorPageClick}
               containerClassName={'pagination'}
               activeClassName={'active'}

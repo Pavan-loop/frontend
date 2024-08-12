@@ -14,6 +14,7 @@ import PatientDetails from './pages/doctor-component/PatientDetails';
 import PatientRegistration from './pages/patient-component/PatientRegistration';
 import PatientLogin from './pages/patient-component/PatientLogin';
 import TestingDashboard from './pages/testing-component/TestingDashboard';
+import ConductTest from './pages/testing-component/Conducttest';
 
 
 
@@ -35,6 +36,7 @@ const App = () => {
         <Route path='/patient/register' element={<PatientRegistration />} />
         <Route path='/patient/login' element={<PatientLogin />} />
         <Route path='/testing/dashboard' element={<TestingDashboard />} />
+        <Route path='/conduct-test/:patientId' element={<ConductTest />} />
       </Routes>
     </Router>
   );

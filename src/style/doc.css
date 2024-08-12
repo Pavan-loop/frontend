@@ -1,7 +1,8 @@
 .doc-container{
-  height: 94vh;
+  height: 100%;
   padding: 0;
   margin: 0;
+
 }
 .doc-container h3 {
   margin: 0;
@@ -97,9 +98,8 @@
   border-radius: 50%;
 }
 .appointments{
-  margin-top: 30px;
-  margin-left: 30px;
-  height: 300px;
+  height: 260.5px;
+  width: 100%;
 }
 
 .appointment-container{

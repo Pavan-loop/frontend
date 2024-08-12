@@ -127,7 +127,7 @@ const PatientDetails = () => {
             <h4>Quick Add Tests:</h4>
             <div className="test-buttons">
               <button onClick={() => addTest('General Checkup')}>General Checkup</button>
-              <button onClick={() => addTest('X-ray')}>X-ray</button>
+              <button onClick={() => addTest('XRay')}>X-ray</button>
               <button onClick={() => addTest('ECG')}>ECG</button>
               <button onClick={() => addTest('Blood Test')}>Blood Test</button>
               <button onClick={() => addTest('MRI')}>MRI</button>
