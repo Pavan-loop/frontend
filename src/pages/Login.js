@@ -20,6 +20,7 @@ const Login = () => {
     if(email === 'admin@gmail.com'){
       try {
         const res = await axios.post('http://localhost:5000/api/auth/login', formData);
+        console.log(res.data.token)
         localStorage.setItem('token', res.data.token);
         navigate('/dashboard');
       } catch (err) {
@@ -38,6 +39,7 @@ const Login = () => {
       try{
         const res = await axios.post('http://localhost:5000/api/emp/auth/login', formData);
         localStorage.setItem('token', res.data.token);
+        console.log(res.data.token);
         localStorage.setItem('userId', res.data.id);
         const role = res.data.role;
         console.log(role);

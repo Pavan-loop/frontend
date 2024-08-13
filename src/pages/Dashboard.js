@@ -70,11 +70,15 @@ const Dashboard = () => {
         const receptionists = employeesRes.data.filter(employee => employee.role === 'receptionist');
         setAvailableReceptionists(receptionists.length);
 
-        const attendedPatientsRes = await axios.get('http://localhost:5000/api/patients/attended/patients', {
-          headers: { 'x-auth-token': token },
-        });
-
-        setAttendedPatients(attendedPatientsRes.data);
+        try{
+          const attendedPatientsRes = await axios.get('http://localhost:5000/api/patients/attended/patients', {
+            headers: { 'x-auth-token': token },
+          });
+  
+          setAttendedPatients(attendedPatientsRes.data);
+        }catch(err){
+          console.log(err.message);
+        }
 
       } catch (err) {
         console.error(err.message);

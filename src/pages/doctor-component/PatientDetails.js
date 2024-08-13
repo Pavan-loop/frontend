@@ -83,7 +83,7 @@ const PatientDetails = () => {
         draggable: true,
         progress: undefined,
       });
-      await axios.put(`http://localhost:5000/api/modify/status/complete/${patientId}`, {}, {
+      await axios.put(`http://localhost:5000/api/modify/status/testing/${patientId}`, {}, {
         headers: {'x-auth-token': localStorage.getItem('token') }
       });
 
