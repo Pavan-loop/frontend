@@ -12,6 +12,7 @@ const Sidebar = () => {
   return (
     <div className="sidebar">
       <ul className='sideList'>
+      <li className='logo'><i class="bi bi-heart-pulse"></i><span className='logo-span'>..</span>MERN</li>
         <li>
           <NavLink
             to="/dashboard"
