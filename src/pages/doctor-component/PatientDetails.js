@@ -61,7 +61,7 @@ const PatientDetails = () => {
   const handleAddCustomTest = () => {
     if (customTest.trim()) {
       addTest(customTest);
-      setCustomTest(''); // Clear the input after adding the test
+      setCustomTest('');
     }
   };
 

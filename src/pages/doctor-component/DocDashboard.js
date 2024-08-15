@@ -30,24 +30,21 @@ const DoctorDashboard = () => {
       }
 
       try {
-        // Fetch doctor information
         const res = await axios.get('http://localhost:5000/api/emp/users', {
           headers: { 'x-auth-token': token },
         });
         setName(res.data.firstName);
 
-        // Fetch patients assigned to this doctor
         const patientRes = await axios.get(`http://localhost:5000/api/patient/doctor/${userId}`, {
           headers: { 'x-auth-token': token },
         });
 
         const patientData = patientRes.data;
 
-        // Set patient data and calculate metrics
         setPatients(patientData);
 
         const totalPatients = patientData.length;
-        const attended = patientData.filter(patient => patient.status === 'Complete').length;
+        const attended = patientData.filter(patient => patient.status === 'History' || patient.status === 'Complete').length;
         const appointments = totalPatients - attended;
         const yetToAttend = patientData.filter(patient => patient.status === 'Yet to check').length;
 
@@ -81,8 +78,7 @@ const DoctorDashboard = () => {
     }
   };
 
-  // Pagination for attended patients
-  const attendedPatientList = patients.filter(patient => patient.status === 'Complete');
+  const attendedPatientList = patients.filter(patient => patient.status === 'Complete' || patient.status === 'History');
   const indexOfLastPatient = currentPage * patientsPerPage;
   const indexOfFirstPatient = indexOfLastPatient - patientsPerPage;
   const currentPatients = attendedPatientList.slice(indexOfFirstPatient, indexOfLastPatient);
@@ -95,7 +91,7 @@ const DoctorDashboard = () => {
     setCurrentPage(prev => prev - 1);
   };
 
-  const filteredPatients = patients.filter(patient => patient.status !== 'Complete');
+  const filteredPatients = patients.filter(patient => patient.status !== 'Complete' && patient.status !== 'History');
   const displayedPatientToDoctor = filteredPatients.slice(patientDoctorPage * itemsPerPage, (patientDoctorPage + 1) * itemsPerPage);
 
   return (
@@ -173,7 +169,6 @@ const DoctorDashboard = () => {
                     ) : (
                       <>
                         <button className='accept' onClick={() => handleAccept(patient._id)}>Accept</button>
-                        <button className='stat'>Decline</button>
                       </>
                     )}
                   </div>

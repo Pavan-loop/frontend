@@ -22,13 +22,10 @@ const PatientLogin = () => {
     try {
       const response = await axios.post('http://localhost:5000/api/patient/login', formData);
 
-      // Check if the response is successful and contains the token
       if (response.status === 200 && response.data.token) {
-        // Store the token in local storage
         localStorage.setItem('patientToken', response.data.token);
 
         alert('Login successful');
-        // Redirect to a different page or perform any other action
       } else {
         alert('Login failed: ' + response.data.message);
       }

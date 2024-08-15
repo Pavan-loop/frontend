@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
-import { useNavigate } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import MainLayout from "./MainLayout";
+import '../../style/conduct.css'; 
 
 const ConductTest = () => {
   const { patientId } = useParams();
   const [patient, setPatient] = useState(null);
   const [test, setTest] = useState([]);
+  const [completedTests, setCompletedTests] = useState([]);
+  const [isSubmitEnabled, setIsSubmitEnabled] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -22,8 +24,7 @@ const ConductTest = () => {
           headers: { 'x-auth-token': localStorage.getItem('token') }
         });
         setTest(testres.data.prescription.tests);
-        console.log(testres.data.prescription.tests)
-
+        setCompletedTests(new Array(testres.data.prescription.tests.length).fill(false)); // Initialize with false
       } catch (err) {
         console.error('Failed to fetch patient details:', err.message);
       }
@@ -31,17 +32,26 @@ const ConductTest = () => {
     fetchPatientDetails();
   }, [patientId]);
 
+  useEffect(() => {
+    const allCompleted = completedTests.every(completed => completed);
+    setIsSubmitEnabled(allCompleted);
+  }, [completedTests]);
+
+  const handleMarkAsDone = (index) => {
+    const updatedCompletedTests = [...completedTests];
+    updatedCompletedTests[index] = true;
+    setCompletedTests(updatedCompletedTests);
+  };
+
   const handleSubmitPrescription = async () => {
     try {
-      // First, mark the patient as 'complete'
-      const res = await axios.put(
+      await axios.put(
         `http://localhost:5000/api/patient/status/complete/${patientId}`,
         {},
         { headers: { 'x-auth-token': localStorage.getItem('token') } }
       );
-      setPatient(res.data); // Update the patient data after marking as complete
       alert('Patient status updated to complete!');
-      navigate('/testing/dashboard')
+      navigate('/testing/dashboard');
     } catch (err) {
       console.error('Failed to update patient status:', err.message);
     }
@@ -53,15 +63,23 @@ const ConductTest = () => {
     <MainLayout>
       <div className="pat-container">
         <div className="prescription">
-          <h3>Tests to Conduct</h3>
-          <ul>
+         <div className="rabaraba">
+         <h3>Tests to Conduct</h3>
+          <div className="card-container">
             {test.map((item, index) => (
-              <li key={index}>
-              <span>{item}</span>
-            </li>
+              <div key={index} className="card">
+                <div className="card-content">
+                  <h4>{item}</h4>
+                  {completedTests[index] ? (
+                    <button className="done-button" disabled>Done</button>
+                  ) : (
+                    <button className="mark-done-button" onClick={() => handleMarkAsDone(index)}>Mark as Done</button>
+                  )}
+                </div>
+              </div>
             ))}
-              
-          </ul>
+          </div>
+         </div>
         </div>
 
         <div className="patient-details">
@@ -90,7 +108,7 @@ const ConductTest = () => {
                 <p>{patient.medicalCondition}</p>
               </div>
               <div className="submit-btn">
-                <button onClick={handleSubmitPrescription}>
+                <button onClick={handleSubmitPrescription} disabled={!isSubmitEnabled} className='submit'>
                   Submit
                 </button>
               </div>

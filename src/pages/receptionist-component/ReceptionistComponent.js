@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import MainLayout from './MainLayout';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import '../../style/receptionist.css';
 
 const ReceptionistDashboard = () => {
@@ -41,7 +43,7 @@ const ReceptionistDashboard = () => {
 
         // Calculate metrics
         const total = patientData.length;
-        const appointments = patientData.filter(patient => patient.status !== 'Complete').length;
+        const appointments = patientData.filter(patient => patient.status !== 'History' && patient.status !== 'Complete').length;
         const yetToAttend = patientData.filter(patient => patient.status === 'Yet to check').length;
         const availableDoctors = await axios.get('http://localhost:5000/api/emp/doctors', {
           headers: { 'x-auth-token': token },
@@ -80,10 +82,12 @@ const ReceptionistDashboard = () => {
   );
   const completedPatients = patients.filter(patient => patient.status === 'Complete');
 
+  const historyPatients = patients.filter(patient => patient.status === 'History');
+
   // Pagination logic
   const indexOfLastPatient = currentPage * patientsPerPage;
   const indexOfFirstPatient = indexOfLastPatient - patientsPerPage;
-  const currentPatients = completedPatients.slice(indexOfFirstPatient, indexOfLastPatient);
+  const currentPatients = historyPatients.slice(indexOfFirstPatient, indexOfLastPatient);
 
   const handleNextPage = () => {
     if (currentPage < Math.ceil(completedPatients.length / patientsPerPage)) {
@@ -98,12 +102,39 @@ const ReceptionistDashboard = () => {
   };
 
   const handleGenerateBill = async (patient) => {
-    navigate(`/billing/${patient._id}`);
+    try{
+      await axios.put(`http://localhost:5000/api/modify/status/history/${patient._id}`, {}, {
+        headers: {'x-auth-token': localStorage.getItem('token')}
+      });
+
+      try{
+        await axios.get(`http://localhost:5000/api/mail/thankyou/${patient._id}`, {}, {
+          headers: {'x-auth-token': localStorage.getItem('token')}
+        });
+        toast.success("Prescription sent to patient's mail", {
+          position: "top-right",
+          autoClose: 2000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+      }catch(err){
+        console.log(err.message);
+      }
+      setTimeout(() => {
+        navigate(`/billing/${patient._id}`);
+      }, 2000);
+    }catch(err){
+      console.log('err.message');
+    }
   };
 
   return (
     <MainLayout>
       <div className="rep-container">
+        <ToastContainer />
         <div className="greetings">
           <h3>Welcome, {name}</h3>
           <span className='wish'>Have a nice day at work</span>

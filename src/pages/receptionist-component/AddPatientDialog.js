@@ -14,7 +14,7 @@ const AddPatientDialog = ({ isOpen, handleClose, refreshPatients }) => {
     doctor: '',
     patientType: '',
     medicalCondition: '',
-    age: ''  // Added age property here
+    age: '' 
   });
 
   const [doctors, setDoctors] = useState([]);
@@ -164,11 +164,11 @@ const AddPatientDialog = ({ isOpen, handleClose, refreshPatients }) => {
                 fullWidth
                 margin="normal"
                 label="Age"
-                name="age"  // Added name attribute for age
-                type="number" // Ensure the input is numeric
+                name="age"
+                type="number"
                 value={formData.age}
                 onChange={handleChange}
-                required  // Make this field required if necessary
+                required 
               />
             </Grid>
             <Grid item xs={6}>

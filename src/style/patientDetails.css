@@ -186,4 +186,10 @@ h5, p{
 }
 .submit{
   padding: 10px 30px 10px 30px;
+  cursor: pointer;
+  background-color: #42b883;
+  border: none;
+  border-radius: 5px;
+  color: #FFFFFF;
+  font-weight: 600;
 }

@@ -1,11 +1,10 @@
-// src/components/AddPatients.js
 
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import ReactPaginate from 'react-paginate';
 import MainLayout from "./MainLayout";
 import AddPatientDialog from "./AddPatientDialog";
-import ChangeDoctorDialog from "./ChangeDoctorDialog"; // Import ChangeDoctorDialog
+import ChangeDoctorDialog from "./ChangeDoctorDialog";
 import '../../style/addPatient.css';
 
 const AddPatients = () => {
@@ -17,7 +16,6 @@ const AddPatients = () => {
   const [currentPage, setCurrentPage] = useState(0);
   const patientsPerPage = 5;
 
-  // Open and close dialog handlers for adding patients
   const handleDialogOpen = () => {
     setIsDialogOpen(true);
   };
@@ -26,7 +24,6 @@ const AddPatients = () => {
     setIsDialogOpen(false);
   };
 
-  // Open and close dialog handlers for changing doctor
   const handleDoctorDialogOpen = (patient) => {
     setSelectedPatient(patient);
     setIsDoctorDialogOpen(true);
@@ -40,7 +37,7 @@ const AddPatients = () => {
     if (newPatient) {
       setPatients(prevPatients => [newPatient, ...prevPatients]);
     } else {
-      fetchPatients(); // Fetch the updated list of patients
+      fetchPatients();
     }
   };
 

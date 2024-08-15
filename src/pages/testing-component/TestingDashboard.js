@@ -57,30 +57,36 @@ const TestingDashboard = () => {
           <div className="test-list">
             <h3>List of Tests</h3>
             <div className="test-card">
-              <table>
-                <thead>
-                  <tr>
-                    <th>S.no</th>
-                    <th>Name</th>
-                    <th>Age</th>
-                    <th>Patient Type</th>
-                    <th>Medical Condition</th>
-                    <th>Activity</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {patients.map((patient, index) => (
-                    <tr key={patient._id}>
-                      <td>{index + 1}</td>
-                      <td>{patient.firstName} {patient.lastName}</td>
-                      <td>{patient.age}</td>
-                      <td>{patient.patientType}</td>
-                      <td>{patient.medicalCondition}</td>
-                      <td><button onClick={() => handleConductTest(patient._id)}>Conduct Test</button></td>
+                <table>
+                  <thead>
+                    <tr>
+                      <th>S.no</th>
+                      <th>Name</th>
+                      <th>Age</th>
+                      <th>Patient Type</th>
+                      <th>Medical Condition</th>
+                      <th>Activity</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {patients.length > 0 ? (
+                    patients.map((patient, index) => (
+                      <tr key={patient._id}>
+                        <td>{index + 1}</td>
+                        <td>{patient.firstName} {patient.lastName}</td>
+                        <td>{patient.age}</td>
+                        <td>{patient.patientType}</td>
+                        <td>{patient.medicalCondition}</td>
+                        <td><button onClick={() => handleConductTest(patient._id)} className='submit'>Conduct Test</button></td>
+                      </tr>
+                    ))
+                    ) : (
+                      <tr>
+                        <td colSpan="6">No attended patients yet.</td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
             </div>
           </div>
         </div>
