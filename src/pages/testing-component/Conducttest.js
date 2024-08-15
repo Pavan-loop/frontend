@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import MainLayout from "./MainLayout";
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import '../../style/conduct.css'; 
 
 const ConductTest = () => {
@@ -50,8 +52,18 @@ const ConductTest = () => {
         {},
         { headers: { 'x-auth-token': localStorage.getItem('token') } }
       );
-      alert('Patient status updated to complete!');
-      navigate('/testing/dashboard');
+      toast.success('The test is completed', {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+      })
+      setTimeout(() => {
+        navigate('/testing/dashboard');
+      }, 2000)
     } catch (err) {
       console.error('Failed to update patient status:', err.message);
     }
@@ -62,6 +74,7 @@ const ConductTest = () => {
   return (
     <MainLayout>
       <div className="pat-container">
+        <ToastContainer />
         <div className="prescription">
          <div className="rabaraba">
          <h3>Tests to Conduct</h3>
