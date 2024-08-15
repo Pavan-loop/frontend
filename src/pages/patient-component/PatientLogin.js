@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { TextField, Button, Grid } from '@mui/material';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
 import "../../style/patientLogin.css";
 
 const PatientLogin = () => {
@@ -8,6 +9,8 @@ const PatientLogin = () => {
     email: '',
     password: ''
   });
+
+  const navigate = useNavigate(); // Initialize useNavigate
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -25,7 +28,7 @@ const PatientLogin = () => {
       if (response.status === 200 && response.data.token) {
         localStorage.setItem('patientToken', response.data.token);
 
-        alert('Login successful');
+        navigate('/patient/history');
       } else {
         alert('Login failed: ' + response.data.message);
       }
