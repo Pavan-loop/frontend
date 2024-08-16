@@ -118,3 +118,9 @@
   color: #ddd;
   pointer-events: none;
 }
+@media(max-height: 800){
+  .total-doctor-card{
+    height: auto;
+    padding: 10px;
+  }
+}

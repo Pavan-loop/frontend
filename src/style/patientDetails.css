@@ -194,13 +194,13 @@ h5, p{
   font-weight: 600;
 }
 
-@media (max-height: 680px) {
+@media (max-height: 800px) {
   .pat-card {
     height: auto;
-    padding: 10px; /* Reduce padding */
+    padding: 10px;
   }
 
   .submit-btn {
-    margin-top: 20px; /* Reduce margin above the button */
+    margin-top: 20px; 
   }
 }
