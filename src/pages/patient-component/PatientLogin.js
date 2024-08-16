@@ -27,6 +27,7 @@ const PatientLogin = () => {
 
       if (response.status === 200 && response.data.token) {
         localStorage.setItem('patientToken', response.data.token);
+        localStorage.setItem('patientId', response.data.id);
 
         navigate('/patient/history');
       } else {
